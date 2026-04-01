@@ -4,7 +4,7 @@ import {
   Plus, 
   Trash2, 
   Edit2, 
-  LayoutGrid, 
+  X, 
   Search,
   CheckCircle2,
   AlertCircle,

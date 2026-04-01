@@ -2,13 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageSquare, 
-  Trash2, 
   CheckCircle, 
   Clock, 
   User, 
   Mail, 
   Search,
-  ChevronDown,
   Archive,
   RefreshCw
 } from 'lucide-react';

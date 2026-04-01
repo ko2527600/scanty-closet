@@ -14,7 +14,7 @@ export function Navbar() {
   const location = useLocation();
   const cartItemsCount = useCartStore((state) => state.items.length);
   const user = useAuthStore((state) => state.user);
-  const isAdmin = user?.role === 'ADMIN';
+  const user = useAuthStore((state) => state.user);
   const controls = useAnimation();
 
   useEffect(() => {
