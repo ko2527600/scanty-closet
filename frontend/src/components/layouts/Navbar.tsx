@@ -13,8 +13,6 @@ export function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const location = useLocation();
   const cartItemsCount = useCartStore((state) => state.items.length);
-  const user = useAuthStore((state) => state.user);
-  const user = useAuthStore((state) => state.user);
   const controls = useAnimation();
 
   useEffect(() => {
