@@ -37,7 +37,7 @@ export function Home() {
         <meta name="description" content="Discover the most exclusive sneaker collections at Scanty's Closet. From timeless classics to the latest performance drops, find your next pair here." />
         <meta property="og:title" content="Scanty's Closet | Premium Sneaker Destination" />
         <meta property="og:description" content="Shop the rarest kicks and latest drops in Ghana. Premium sneakers, guaranteed authentic." />
-        <meta property="og:image" content="/images/assets/hero.png" />
+        <meta property="og:image" content="/favicon.png" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
