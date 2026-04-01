@@ -1,6 +1,7 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
+import '../lib/cloudinary.js'; // ensure cloudinary is configured
 import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = Router();

@@ -10,6 +10,7 @@ import userRoutes from './routes/user.js';
 import orderRoutes from './routes/order.js';
 import reviewRoutes from './routes/review.js';
 import uploadRoutes from './routes/upload.js';
+import contactRoutes from './routes/contact.js';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Main health check route
 app.get('/health', async (_req, res) => {

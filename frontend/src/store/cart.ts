@@ -2,8 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export interface CartItem {
-  id: string; // Product variant ID
+  id: string; // composite key: productId-variantId
   productId: string;
+  variantId?: string;
   name: string;
   price: number;
   quantity: number;

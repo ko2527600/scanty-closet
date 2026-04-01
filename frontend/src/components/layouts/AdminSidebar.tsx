@@ -6,7 +6,9 @@ import {
   Settings, 
   LogOut, 
   ChevronRight,
-  Boxes
+  Boxes,
+  MessageSquare,
+  LayoutGrid
 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth';
 import { cn } from '../../lib/utils';
@@ -14,8 +16,10 @@ import { cn } from '../../lib/utils';
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
   { id: 'products', label: 'Products', icon: Package, path: '/admin/products' },
+  { id: 'categories', label: 'Categories', icon: LayoutGrid, path: '/admin/categories' },
   { id: 'inventory', label: 'Inventory', icon: Boxes, path: '/admin/inventory' },
   { id: 'orders', label: 'Orders', icon: ShoppingCart, path: '/admin/orders' },
+  { id: 'messages', label: 'Messages', icon: MessageSquare, path: '/admin/messages' },
 ];
 
 export function AdminSidebar() {

@@ -39,7 +39,7 @@ export function Hero() {
               Shop Latest
               <ArrowRight className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" size="lg" className="h-16 px-10 rounded-2xl group/btn">
+            <Button variant="outline" size="lg" className="h-16 px-10 rounded-2xl group/btn" onClick={() => window.location.href='/shop?sort=newest'}>
               <ShoppingBag className="mr-2" />
               View Trends
             </Button>
@@ -48,21 +48,21 @@ export function Hero() {
           {/* Stats */}
           <div className="pt-12 grid grid-cols-3 gap-8">
             <div className="space-y-1">
-              <div className="text-3xl font-black text-white italic">15k+</div>
-              <div className="text-[10px] uppercase font-bold text-brand-silver/30 tracking-widest">Happy Clients</div>
+              <div className="text-3xl font-black text-white italic tracking-tighter">12.5k+</div>
+              <div className="text-[10px] uppercase font-black text-brand-red tracking-widest">Global Members</div>
             </div>
             <div className="space-y-1">
-              <div className="text-3xl font-black text-white italic">50+</div>
-              <div className="text-[10px] uppercase font-bold text-brand-silver/30 tracking-widest">Premium Brands</div>
+              <div className="text-3xl font-black text-white italic tracking-tighter">85+</div>
+              <div className="text-[10px] uppercase font-black text-brand-red tracking-widest">Premium Brands</div>
             </div>
             <div className="space-y-1">
-              <div className="text-3xl font-black text-white italic">100%</div>
-              <div className="text-[10px] uppercase font-bold text-brand-silver/30 tracking-widest">On-Time Always</div>
+              <div className="text-3xl font-black text-white italic tracking-tighter">100%</div>
+              <div className="text-[10px] uppercase font-black text-brand-red tracking-widest">Authentic Always</div>
             </div>
           </div>
         </motion.div>
 
-        {/* Visual Product Mockup (Placeholder Circle for now) */}
+        {/* Visual Product Mockup */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -70,17 +70,17 @@ export function Hero() {
           className="relative aspect-square max-w-[500px] mx-auto group"
         >
           {/* Main Visual Circle */}
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-red to-transparent rounded-[4rem] group-hover:rotate-6 transition-transform duration-700 -z-10 blur-xl opacity-30" />
-          <div className="w-full h-full bg-white/5 border border-white/10 rounded-[4rem] flex items-center justify-center p-8 backdrop-blur-2xl group-hover:-rotate-3 transition-transform duration-700 shadow-2xl overflow-hidden group/img">
-            {/* Inner Brand S */}
-            <span className="text-white/5 font-black text-[20rem] absolute -bottom-20 -right-20 italic">S</span>
-            <div className="relative z-10 w-full aspect-square rounded-[3rem] bg-brand-darkgrey shadow-inset group-hover/img:scale-105 transition-transform duration-1000 overflow-hidden">
-               {/* Image Placeholder with rich color */}
-               <div className="w-full h-full bg-gradient-to-tr from-brand-red/10 via-brand-red/5 to-transparent flex items-center justify-center">
-                 <div className="w-48 h-48 bg-brand-red rounded-3xl flex items-center justify-center rotate-12">
-                   <span className="text-white font-black text-7xl italic">S</span>
-                 </div>
-               </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-red to-transparent rounded-[4rem] group-hover:rotate-12 transition-transform duration-700 -z-10 blur-2xl opacity-40 animate-pulse" />
+          <div className="w-full h-full bg-white/5 border border-white/10 rounded-[4rem] flex items-center justify-center p-4 backdrop-blur-2xl group-hover:-rotate-3 transition-transform duration-1000 shadow-2xl overflow-hidden group/img">
+            {/* Inner Brand S Background */}
+            <span className="text-white/5 font-black text-[25rem] absolute -bottom-20 -right-20 italic pointer-events-none select-none">S</span>
+            
+            <div className="relative z-10 w-full aspect-square rounded-[3rem] bg-brand-darkgrey shadow-2xl group-hover/img:scale-105 transition-transform duration-1000 overflow-hidden border border-white/5">
+                <img 
+                  src="/images/assets/hero.png" 
+                  alt="Scanty's Closet Premium Sneaker" 
+                  className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-[2000ms] pointer-events-none"
+                />
             </div>
           </div>
         </motion.div>

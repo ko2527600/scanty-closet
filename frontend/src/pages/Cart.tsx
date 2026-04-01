@@ -1,18 +1,85 @@
+import { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, ArrowLeft, CreditCard, Truck, ShieldCheck } from 'lucide-react';
+import { toast } from 'sonner';
 import { useCartStore } from '../store/cart';
+import { useAuthStore } from '../store/auth';
 import { formatPrice } from '../lib/utils';
 import { Button } from '../components/ui/Button';
-import { CartItem } from '../components/cart/CartItem';
+import { CartItem as CartItemComponent } from '../components/cart/CartItem';
 import { Input } from '../components/ui/Input';
+import api from '../lib/axios';
 
 export function Cart() {
-  const { items, total } = useCartStore();
+  const { items, total, clearCart } = useCartStore();
+  const { user, token } = useAuthStore();
   const navigate = useNavigate();
+  const [placing, setPlacing] = useState(false);
+
+  const [form, setForm] = useState({
+    firstName: user?.firstName ?? '',
+    lastName: user?.lastName ?? '',
+    email: '',
+    address: '',
+    city: '',
+    postalCode: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const shipping = items.length > 0 ? 15 : 0;
   const tax = total * 0.08;
   const grandTotal = total + shipping + tax;
+
+  const handlePlaceOrder = async () => {
+    if (!token) {
+      toast.error('Please log in to place an order.');
+      navigate('/login');
+      return;
+    }
+
+    const { firstName, lastName, email, address, city, postalCode } = form;
+    if (!firstName || !lastName || !email || !address || !city || !postalCode) {
+      toast.error('Please fill in all shipping details.');
+      return;
+    }
+
+    const hasVariants = items.every((item) => !!item.variantId);
+    if (!hasVariants) {
+      toast.error(
+        'Some items were added without choosing a size. Please remove them and re-add with a size selected.'
+      );
+      return;
+    }
+
+    setPlacing(true);
+    try {
+      const shippingAddress = `${firstName} ${lastName}, ${address}, ${city} ${postalCode}`;
+      const cartItems = items.map((item) => ({
+        variantId: item.variantId,
+        quantity: item.quantity,
+      }));
+
+      await api.post('/orders/checkout', { cartItems, shippingAddress });
+
+      clearCart();
+      toast.success('Order placed successfully! 🎉', {
+        description: 'Your order is now being processed.',
+        duration: 5000,
+      });
+      navigate('/profile');
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? (err as any).response?.data?.error ?? 'Failed to place order.'
+        : 'Failed to place order.';
+      toast.error(msg);
+    } finally {
+      setPlacing(false);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -34,86 +101,96 @@ export function Cart() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 lg:py-24 space-y-12">
       <div className="space-y-4 border-b border-white/5 pb-12">
-        <button 
+        <button
           onClick={() => navigate('/shop')}
           className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-red italic flex items-center hover:underline"
         >
           <ArrowLeft size={12} className="mr-2" /> Continue Shopping
         </button>
         <h1 className="text-6xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-none">
-          Checkout <br/> <span className="text-brand-silver/20 border-brand-red border-b-8">Summary.</span>
+          Checkout <br /> <span className="text-brand-silver/20 border-brand-red border-b-8">Summary.</span>
         </h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
-        {/* Left: Cart Items & Form */}
+        {/* Left: Cart Items & Shipping Form */}
         <div className="lg:col-span-2 space-y-12">
-           <div className="space-y-6">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-silver/30 italic">Items In Your Closet</h3>
-              <div className="divide-y divide-white/5 border-t border-b border-white/5">
-                {items.map((item) => (
-                  <CartItem key={item.id} item={item} />
-                ))}
-              </div>
-           </div>
+          <div className="space-y-6">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-silver/30 italic">
+              Items In Your Closet
+            </h3>
+            <div className="divide-y divide-white/5 border-t border-b border-white/5">
+              {items.map((item) => (
+                <CartItemComponent key={item.id} item={item} />
+              ))}
+            </div>
+          </div>
 
-           <div className="space-y-8">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-silver/30 italic">Shipping Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <Input label="First Name" placeholder="Sneaker" />
-                 <Input label="Last Name" placeholder="Head" />
-                 <Input label="Email" placeholder="you@example.com" className="md:col-span-2" />
-                 <Input label="Address" placeholder="123 Hype St" className="md:col-span-2" />
-                 <Input label="City" placeholder="Streetwear City" />
-                 <Input label="Postal Code" placeholder="ZIP CODE" />
-              </div>
-           </div>
+          <div className="space-y-8">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-silver/30 italic">
+              Shipping Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input label="First Name" name="firstName" placeholder="John" value={form.firstName} onChange={handleChange} />
+              <Input label="Last Name" name="lastName" placeholder="Doe" value={form.lastName} onChange={handleChange} />
+              <Input label="Email" name="email" type="email" placeholder="john.doe@email.com" value={form.email} onChange={handleChange} className="md:col-span-2" />
+              <Input label="Address" name="address" placeholder="Residential Address / House Number" value={form.address} onChange={handleChange} className="md:col-span-2" />
+              <Input label="City" name="city" placeholder="e.g. Accra" value={form.city} onChange={handleChange} />
+              <Input label="Postal Code" name="postalCode" placeholder="00233" value={form.postalCode} onChange={handleChange} />
+            </div>
+          </div>
         </div>
 
         {/* Right: Order Summary */}
         <div className="sticky top-32 space-y-8">
-           <div className="bg-white/5 border border-white/10 rounded-[3rem] p-10 space-y-8 backdrop-blur-xl">
-              <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Order Total</h3>
-              
-              <div className="space-y-4">
-                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-silver/50">Subtotal</span>
-                    <span className="text-sm font-black text-white">{formatPrice(total)}</span>
-                 </div>
-                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-silver/50">Shipping</span>
-                    <span className="text-sm font-black text-white">{formatPrice(shipping)}</span>
-                 </div>
-                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-silver/50">Tax (8%)</span>
-                    <span className="text-sm font-black text-white">{formatPrice(tax)}</span>
-                 </div>
-                 <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                    <span className="text-lg font-black uppercase tracking-tighter text-white">Grand Total</span>
-                    <span className="text-3xl font-black text-brand-red italic">{formatPrice(grandTotal)}</span>
-                 </div>
-              </div>
+          <div className="bg-white/5 border border-white/10 rounded-[3rem] p-10 space-y-8 backdrop-blur-xl">
+            <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Order Total</h3>
 
-              <Button size="lg" className="w-full h-20 rounded-2xl text-xl font-black uppercase italic tracking-tight group">
-                 <CreditCard className="mr-3 group-hover:rotate-12 transition-transform" />
-                 Pay & Place Order
-              </Button>
-
-              <div className="flex flex-col gap-4 pt-6 border-t border-white/5">
-                 <div className="flex items-center text-[8px] font-bold uppercase tracking-[0.2em] text-brand-silver/30">
-                    <Truck size={14} className="mr-3 text-brand-red" />
-                    Estimated Delivery: 3-5 Business Days
-                 </div>
-                 <div className="flex items-center text-[8px] font-bold uppercase tracking-[0.2em] text-brand-silver/30">
-                    <ShieldCheck size={14} className="mr-3 text-brand-red" />
-                    Secure SSL Encrypted Payment
-                 </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-brand-silver/50">Subtotal</span>
+                <span className="text-sm font-black text-white">{formatPrice(total)}</span>
               </div>
-           </div>
-           
-           <p className="text-center text-[10px] font-bold text-brand-silver/20 uppercase tracking-[0.2em]">
-             "Punctuality is the soul of business"
-           </p>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-brand-silver/50">Shipping</span>
+                <span className="text-sm font-black text-white">{formatPrice(shipping)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-brand-silver/50">Tax (8%)</span>
+                <span className="text-sm font-black text-white">{formatPrice(tax)}</span>
+              </div>
+              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                <span className="text-lg font-black uppercase tracking-tighter text-white">Grand Total</span>
+                <span className="text-3xl font-black text-brand-red italic">{formatPrice(grandTotal)}</span>
+              </div>
+            </div>
+
+            <Button
+              size="lg"
+              className="w-full h-20 rounded-2xl text-xl font-black uppercase italic tracking-tight group"
+              onClick={handlePlaceOrder}
+              isLoading={placing}
+              disabled={placing}
+            >
+              <CreditCard className="mr-3 group-hover:rotate-12 transition-transform" />
+              Pay &amp; Place Order
+            </Button>
+
+            <div className="flex flex-col gap-4 pt-6 border-t border-white/5">
+              <div className="flex items-center text-[8px] font-bold uppercase tracking-[0.2em] text-brand-silver/30">
+                <Truck size={14} className="mr-3 text-brand-red" />
+                Estimated Delivery: 3-5 Business Days
+              </div>
+              <div className="flex items-center text-[8px] font-bold uppercase tracking-[0.2em] text-brand-silver/30">
+                <ShieldCheck size={14} className="mr-3 text-brand-red" />
+                Secure SSL Encrypted Payment
+              </div>
+            </div>
+          </div>
+
+          <p className="text-center text-[10px] font-bold text-brand-silver/20 uppercase tracking-[0.2em]">
+            "Punctuality is the soul of business"
+          </p>
         </div>
       </div>
     </div>

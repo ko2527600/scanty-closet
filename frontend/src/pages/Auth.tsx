@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { toast } from 'sonner';
+import axios from 'axios';
 import { useAuthStore } from '../store/auth';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -9,26 +11,47 @@ import { Input } from '../components/ui/Input';
 export function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' });
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // MOCK LOGIN FOR UI BUILDING
-    setTimeout(() => {
-      setAuth({
-        id: '1',
-        email: 'user@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        role: 'ADMIN' // Set to ADMIN to allow dashboard testing
-      }, 'mock-jwt-token');
-      
+    try {
+      if (isLogin) {
+        const { data } = await axios.post('http://localhost:5000/api/auth/login', {
+          email: form.email,
+          password: form.password,
+        });
+        setAuth(data.user, data.token);
+        toast.success(`Welcome back, ${data.user.firstName}!`);
+        if (data.user.role === 'ADMIN') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
+      } else {
+        const { data } = await axios.post('http://localhost:5000/api/auth/register', {
+          email: form.email,
+          password: form.password,
+          firstName: form.firstName,
+          lastName: form.lastName,
+        });
+        setAuth(data.user, data.token);
+        toast.success('Account created! Welcome to Scanty\'s Closet.');
+        navigate('/');
+      }
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err) ? err.response?.data?.error ?? 'Something went wrong.' : 'Something went wrong.';
+      toast.error(msg);
+    } finally {
       setLoading(false);
-      navigate('/');
-    }, 1000);
+    }
   };
 
   return (
@@ -74,12 +97,12 @@ export function Auth() {
            <form onSubmit={handleAuth} className="space-y-6">
               {!isLogin && (
                 <div className="grid grid-cols-2 gap-4">
-                   <Input label="First Name" placeholder="Sneaker" required />
-                   <Input label="Last Name" placeholder="Head" required />
+                   <Input label="First Name" name="firstName" placeholder="John" value={form.firstName} onChange={handleChange} required />
+                   <Input label="Last Name" name="lastName" placeholder="Doe" value={form.lastName} onChange={handleChange} required />
                 </div>
               )}
-              <Input label="Email Address" type="email" placeholder="you@example.com" required />
-              <Input label="Password" type="password" placeholder="••••••••" required />
+              <Input label="Email Address" name="email" type="email" placeholder="john.doe@email.com" value={form.email} onChange={handleChange} required />
+              <Input label="Password" name="password" type="password" placeholder="••••••••" value={form.password} onChange={handleChange} required />
               
               <Button 
                 type="submit" 

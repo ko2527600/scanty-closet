@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  engineType = "library"
 }
 
 datasource db {
@@ -8,40 +7,33 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
+  id            String   @id @default(uuid())
+  email         String   @unique
   password_hash String
   first_name    String
   last_name     String
   address       String?
   phone_number  String?
-  role          Role      @default(CUSTOMER)
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
-  
+  role          Role     @default(CUSTOMER)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
   orders        Order[]
   reviews       Review[]
 
   @@map("users")
 }
 
-enum Role {
-  CUSTOMER
-  ADMIN
-}
-
 model Product {
-  id          String   @id @default(uuid())
+  id          String           @id @default(uuid())
   name        String
   description String
   brand       String
-  price       Decimal  @db.Decimal(10, 2)
+  price       Decimal          @db.Decimal(10, 2)
   category_id String?
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  
-  category    Category? @relation(fields: [category_id], references: [id])
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @updatedAt
   variants    ProductVariant[]
+  category    Category?        @relation(fields: [category_id], references: [id])
   reviews     Review[]
 
   @@map("products")
@@ -56,16 +48,15 @@ model Category {
 }
 
 model ProductVariant {
-  id             String   @id @default(uuid())
+  id             String      @id @default(uuid())
   product_id     String
   size           String
   color          String
-  sku            String   @unique
-  stock_quantity Int      @default(0)
-  image_urls     String[] // Array for storing image paths
-  
-  product        Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  sku            String      @unique
+  stock_quantity Int         @default(0)
+  image_urls     String[]
   order_items    OrderItem[]
+  product        Product     @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
   @@map("product_variants")
 }
@@ -78,19 +69,10 @@ model Order {
   status           OrderStatus @default(PENDING)
   shipping_address String
   billing_address  String
-  
-  user             User        @relation(fields: [user_id], references: [id])
   order_items      OrderItem[]
+  user             User        @relation(fields: [user_id], references: [id])
 
   @@map("orders")
-}
-
-enum OrderStatus {
-  PENDING
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
 }
 
 model OrderItem {
@@ -99,7 +81,6 @@ model OrderItem {
   product_variant_id String
   quantity           Int            @default(1)
   price_at_purchase  Decimal        @db.Decimal(10, 2)
-  
   order              Order          @relation(fields: [order_id], references: [id], onDelete: Cascade)
   product_variant    ProductVariant @relation(fields: [product_variant_id], references: [id])
 
@@ -110,13 +91,43 @@ model Review {
   id         String   @id @default(uuid())
   product_id String
   user_id    String
-  rating     Int      
+  rating     Int
   comment    String?
   image_urls String[]
   created_at DateTime @default(now())
-  
   product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("reviews")
+}
+
+model ContactMessage {
+  id         String        @id @default(uuid())
+  name       String
+  email      String
+  subject    String
+  message    String
+  status     MessageStatus @default(NEW)
+  created_at DateTime      @default(now())
+
+  @@map("contact_messages")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum MessageStatus {
+  NEW
+  READ
+  ARCHIVED
 }

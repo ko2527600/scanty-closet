@@ -7,12 +7,15 @@ import { ProductDetails } from './pages/ProductDetails';
 import { Cart } from './pages/Cart';
 import { Auth } from './pages/Auth';
 import { Profile } from './pages/Profile';
+import { Contact } from './pages/Contact';
 import { AdminLayout } from './components/layouts/AdminLayout';
 import { Dashboard } from './pages/admin/Dashboard';
 import { ProductManagement } from './pages/admin/ProductManagement';
 import { ProductEditor } from './pages/admin/ProductEditor';
 import { InventoryManagement } from './pages/admin/InventoryManagement';
 import { OrderManagement } from './pages/admin/OrderManagement';
+import { MessageManagement } from './pages/admin/MessageManagement';
+import { CategoryManagement } from './pages/admin/CategoryManagement';
 import { Toaster } from 'sonner';
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode, role?: 'CUSTOMER' | 'ADMIN' }) {
@@ -37,6 +40,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/contact" element={<Contact />} />
         </Route>
 
         {/* Protected Admin Routes */}
@@ -54,6 +58,8 @@ function App() {
           <Route path="products/:id/edit" element={<ProductEditor />} />
           <Route path="inventory" element={<InventoryManagement />} />
           <Route path="orders" element={<OrderManagement />} />
+          <Route path="messages" element={<MessageManagement />} />
+          <Route path="categories" element={<CategoryManagement />} />
         </Route>
       </Routes>
     </Router>

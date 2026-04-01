@@ -29,7 +29,7 @@ export function Navbar() {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
-    ...(isAdmin ? [{ name: 'Admin', href: '/admin' }] : []),
+    { name: 'Contact', href: '/contact' },
   ];
 
   return (
