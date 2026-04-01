@@ -5,7 +5,6 @@ import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
 import { useCartStore } from '../../store/cart';
-import { useAuthStore } from '../../store/auth';
 import { CartDrawer } from '../cart/CartDrawer';
 
 export function Navbar() {
