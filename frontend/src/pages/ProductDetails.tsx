@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import api from '../lib/axios';
 import { Helmet } from 'react-helmet-async';
 import { ProductCard } from '../components/products/ProductCard';
+import { getOptimizedImage } from '../lib/cloudinary';
 
 interface ProductVariant {
   id: string;
@@ -178,7 +179,7 @@ export function ProductDetails() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                src={images[activeImage] ?? FALLBACK_IMAGE}
+                src={getOptimizedImage(images[activeImage] ?? FALLBACK_IMAGE, 1200)}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
@@ -210,7 +211,7 @@ export function ProductDetails() {
                     activeImage === idx ? 'border-brand-red p-1' : 'border-transparent opacity-50 hover:opacity-100'
                   )}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover rounded-xl" />
+                  <img src={getOptimizedImage(img, 200)} alt="" className="w-full h-full object-cover rounded-xl" />
                 </button>
               ))}
             </div>

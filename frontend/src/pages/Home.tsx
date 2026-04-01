@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button';
 import { ArrowRight, ChevronRight, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/axios';
+import { ProductGridSkeleton } from '../components/ui/ProductSkeleton';
 
 interface Product {
   id: string;
@@ -19,7 +20,7 @@ interface Product {
 export function Home() {
   const navigate = useNavigate();
 
-  const { data: products } = useQuery<Product[]>({
+  const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['products'],
     queryFn: async () => {
       const { data } = await api.get('/products');
@@ -61,7 +62,9 @@ export function Home() {
           </Button>
         </div>
 
-        {featured.length > 0 ? (
+        {isLoading || featured.length === 0 ? (
+          <ProductGridSkeleton count={4} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" />
+        ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featured.map((product) => (
               <ProductCard
@@ -72,12 +75,6 @@ export function Home() {
                 price={Number(product.price)}
                 image={product.variants?.[0]?.image_urls?.[0] || 'https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=2070&auto=format&fit=crop'}
               />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="aspect-[3/4] rounded-[2rem] bg-white/5 animate-pulse" />
             ))}
           </div>
         )}

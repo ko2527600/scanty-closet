@@ -9,6 +9,7 @@ import { ProductCard } from '../components/products/ProductCard';
 import { ShoppingBag, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import api from '../lib/axios';
+import { ProductGridSkeleton } from '../components/ui/ProductSkeleton';
 
 const FILTERS = {
   brands: ['Nike', 'Adidas', 'Reebok', 'Puma', 'New Balance'],
@@ -168,11 +169,7 @@ export function Shop() {
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="aspect-[3/4] rounded-[2rem] bg-white/5 animate-pulse" />
-              ))}
-            </div>
+            <ProductGridSkeleton count={6} className="xl:grid-cols-3" />
           ) : filteredProducts.length === 0 && products?.length === 0 ? (
             <div className="py-32 text-center space-y-4">
               <ShoppingBag size={48} className="mx-auto text-brand-silver/20" />

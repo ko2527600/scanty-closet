@@ -6,6 +6,8 @@ import { Button } from '../ui/Button';
 import { useCartStore } from '../../store/cart';
 import { toast } from 'sonner';
 
+import { getOptimizedImage } from '../../lib/cloudinary';
+
 interface ProductCardProps {
   id: string;
   name: string;
@@ -17,6 +19,7 @@ interface ProductCardProps {
 
 export function ProductCard({ id, name, brand, price, image, className }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const optimizedImage = getOptimizedImage(image, 600);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -53,8 +56,9 @@ export function ProductCard({ id, name, brand, price, image, className }: Produc
         <motion.img
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          src={image}
+          src={optimizedImage}
           alt={name}
+          loading="lazy"
           className="w-full h-full object-cover object-center"
         />
         
