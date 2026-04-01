@@ -25,39 +25,39 @@ export function Hero() {
             >
               New Collection 2026
             </motion.div>
-            <h1 className="text-6xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-[0.9] drop-shadow-2xl">
+            <h1 className="text-5xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-[0.9] drop-shadow-2xl">
               Elevate Your <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-white decoration-white underline underline-offset-8 decoration-4">Street Game.</span>
             </h1>
-            <p className="text-brand-silver/50 max-w-xl mx-auto lg:mx-0 font-medium text-lg leading-relaxed">
+            <p className="text-brand-silver/50 max-w-xl mx-auto lg:mx-0 font-medium text-base md:text-lg leading-relaxed">
               Step into the world of premium sneakers where punctuality meets style. Explore our curated selection of limited pieces from the iconic brands.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-            <Button size="lg" className="h-16 px-10 rounded-2xl group/btn" onClick={() => window.location.href='/shop'}>
+            <Button size="lg" className="h-16 px-10 rounded-2xl group/btn w-full sm:w-auto" onClick={() => window.location.href='/shop'}>
               Shop Latest
               <ArrowRight className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" size="lg" className="h-16 px-10 rounded-2xl group/btn" onClick={() => window.location.href='/shop?sort=newest'}>
+            <Button variant="outline" size="lg" className="h-16 px-10 rounded-2xl group/btn w-full sm:w-auto" onClick={() => window.location.href='/shop?sort=newest'}>
               <ShoppingBag className="mr-2" />
               View Trends
             </Button>
           </div>
           
           {/* Stats */}
-          <div className="pt-12 grid grid-cols-3 gap-8">
+          <div className="pt-12 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             <div className="space-y-1">
-              <div className="text-3xl font-black text-white italic tracking-tighter">12.5k+</div>
-              <div className="text-[10px] uppercase font-black text-brand-red tracking-widest">Global Members</div>
+              <div className="text-2xl md:text-3xl font-black text-white italic tracking-tighter">12.5k+</div>
+              <div className="text-[9px] md:text-[10px] uppercase font-black text-brand-red tracking-widest">Global Members</div>
             </div>
             <div className="space-y-1">
-              <div className="text-3xl font-black text-white italic tracking-tighter">85+</div>
-              <div className="text-[10px] uppercase font-black text-brand-red tracking-widest">Premium Brands</div>
+              <div className="text-2xl md:text-3xl font-black text-white italic tracking-tighter">85+</div>
+              <div className="text-[9px] md:text-[10px] uppercase font-black text-brand-red tracking-widest">Premium Brands</div>
             </div>
-            <div className="space-y-1">
-              <div className="text-3xl font-black text-white italic tracking-tighter">100%</div>
-              <div className="text-[10px] uppercase font-black text-brand-red tracking-widest">Authentic Always</div>
+            <div className="space-y-1 col-span-2 md:col-span-1 text-center md:text-left">
+              <div className="text-2xl md:text-3xl font-black text-white italic tracking-tighter">100%</div>
+              <div className="text-[9px] md:text-[10px] uppercase font-black text-brand-red tracking-widest">Authentic Always</div>
             </div>
           </div>
         </motion.div>

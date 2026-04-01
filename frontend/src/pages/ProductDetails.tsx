@@ -157,8 +157,8 @@ export function ProductDetails() {
       </Helmet>
 
       {/* Breadcrumbs */}
-      <div className="flex items-center space-x-4 text-[10px] font-black uppercase tracking-[0.2em] text-brand-silver/30 italic">
-        <Link to="/shop" className="hover:text-brand-red transition-colors flex items-center">
+      <div className="flex items-center space-x-4 text-[10px] font-black uppercase tracking-[0.2em] text-brand-silver/30 italic overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
+        <Link to="/shop" className="hover:text-brand-red transition-colors flex items-center shrink-0">
           <ArrowLeft size={12} className="mr-2" /> Back to Shop
         </Link>
         <span>/</span>
@@ -284,7 +284,7 @@ export function ProductDetails() {
                     Size Guide
                   </button>
                 </div>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                   {uniqueSizes.map((size) => {
                     const v = product.variants.find((vv) => vv.size === size);
                     const outOfStock = v?.stock_quantity === 0;
