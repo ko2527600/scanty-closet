@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/auth';
 
+// CACHE-BUSTER: Force clean build with live backend v2
 const api = axios.create({
   baseURL: 'https://scanty-backend.onrender.com/api',
 });
