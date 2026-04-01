@@ -47,7 +47,7 @@ export const updateMessageStatus = async (req: Request, res: Response, next: Nex
     if (!status) return res.status(400).json({ error: 'Status is required' });
 
     const updatedMessage = await prisma.contactMessage.update({
-      where: { id },
+      where: { id: id as string },
       data: { status },
     });
 
