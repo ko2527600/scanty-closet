@@ -54,9 +54,17 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       return res.status(400).json({ error: 'Missing email or password' });
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    let user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Self-healing Admin Promotion
+    if (user.email === process.env.ADMIN_EMAIL && user.role !== 'ADMIN') {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { role: 'ADMIN' }
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password_hash);
