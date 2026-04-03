@@ -22,12 +22,20 @@ const menuItems = [
   { id: 'messages', label: 'Messages', icon: MessageSquare, path: '/admin/messages' },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
   const location = useLocation();
   const logout = useAuthStore((state) => state.logout);
 
   return (
-    <aside className="w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-0">
+    <aside className={cn(
+      "w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-0 z-50 transition-transform duration-300 ease-in-out md:translate-x-0",
+      isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
+    )}>
       <div className="p-6">
         <h2 className="text-2xl font-bold tracking-tighter text-red-500 uppercase">
           Scanty Admin
@@ -41,6 +49,7 @@ export function AdminSidebar() {
             <Link
               key={item.id}
               to={item.path}
+              onClick={() => setIsOpen(false)}
               className={cn(
                 "flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 group text-sm font-medium",
                 isActive 
@@ -61,6 +70,7 @@ export function AdminSidebar() {
       <div className="p-4 border-t border-slate-800 space-y-2">
         <Link 
           to="/profile"
+          onClick={() => setIsOpen(false)}
           className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white transition-colors"
         >
           <Settings size={18} />
