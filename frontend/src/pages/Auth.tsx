@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import api from '../lib/axios';
 import { useAuthStore } from '../store/auth';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -24,7 +25,7 @@ export function Auth() {
     setLoading(true);
     try {
       if (isLogin) {
-        const { data } = await axios.post('http://localhost:5000/api/auth/login', {
+        const { data } = await api.post('/auth/login', {
           email: form.email,
           password: form.password,
         });
@@ -36,7 +37,7 @@ export function Auth() {
           navigate('/');
         }
       } else {
-        const { data } = await axios.post('http://localhost:5000/api/auth/register', {
+        const { data } = await api.post('/auth/register', {
           email: form.email,
           password: form.password,
           firstName: form.firstName,
